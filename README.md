@@ -1,6 +1,6 @@
 # financial_app
 
-A new Flutter project.
+Personal Expenses App Project - Flutter
 
 ## Getting Started
 
