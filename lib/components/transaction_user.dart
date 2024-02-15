@@ -1,5 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors
 
+import 'dart:math';
+
 import 'package:financial_app/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'transaction_form.dart';
@@ -23,9 +25,48 @@ class _TransactionUserState extends State<TransactionUser> {
         Transaction(
           id:"t2",
           title: "Conta de Luz",
-          value: 55.70,
+          value: 155.70,
+          date: DateTime.now()),
+          Transaction(
+          id:"t3",
+          title: "Conta de Luz1",
+          value: 155.70,
+          date: DateTime.now()),
+          Transaction(
+          id:"t20",
+          title: "Conta de Luz 3",
+          value: 155.70,
+          date: DateTime.now()),
+          Transaction(
+          id:"t10",
+          title: "Conta de Luz 10",
+          value: 155.70,
+          date: DateTime.now()),
+          Transaction(
+          id:"11",
+          title: "Conta de Luz 11",
+          value: 155.70,
+          date: DateTime.now()),
+          Transaction(
+          id:"12",
+          title: "Conta de Luz 12",
+          value: 155.70,
+          date: DateTime.now()),
+          Transaction(
+          id:"13",
+          title: "Conta de Luz 13",
+          value: 155.70,
           date: DateTime.now())
           ];
+
+
+  _addTransaction(String title, double value){
+    final newTransaction = Transaction(id: Random().nextDouble().toString(), title: title, value: value, date: DateTime.now());
+
+    setState(() {
+      _transactions.add(newTransaction);
+    });
+  }
 
           
   @override
@@ -33,7 +74,7 @@ class _TransactionUserState extends State<TransactionUser> {
     return Column(
       children: [
         TransactionList(_transactions),
-        TransactionForm(),
+        TransactionForm(_addTransaction),
       ],
     );
   }
