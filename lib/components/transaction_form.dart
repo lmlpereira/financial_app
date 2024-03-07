@@ -1,4 +1,5 @@
-import 'dart:ffi';
+
+// ignore_for_file: use_key_in_widget_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ class TransactionForm extends StatefulWidget {
 
   final void Function (String,double) onSubmit;
   
-  TransactionForm(this.onSubmit);
+  const TransactionForm(this.onSubmit);
 
   @override
   State<TransactionForm> createState() => _TransactionFormState();
@@ -36,7 +37,7 @@ class _TransactionFormState extends State<TransactionForm> {
     return Card(
             elevation: 5,
             child: Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
                   TextField(
