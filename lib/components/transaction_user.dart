@@ -17,52 +17,11 @@ class TransactionUser extends StatefulWidget {
 
 class _TransactionUserState extends State<TransactionUser> {
 
-  final _transactions = [
-        Transaction(
-          id:"t1",
-          title: "Tenis de corrida",
-          value: 310.70,
-          date: DateTime.now()),
-        Transaction(
-          id:"t2",
-          title: "Conta de Luz",
-          value: 155.70,
-          date: DateTime.now()),
-          Transaction(
-          id:"t3",
-          title: "Conta de Luz1",
-          value: 155.70,
-          date: DateTime.now()),
-          Transaction(
-          id:"t20",
-          title: "Conta de Luz 3",
-          value: 155.70,
-          date: DateTime.now()),
-          Transaction(
-          id:"t10",
-          title: "Conta de Luz 10",
-          value: 155.70,
-          date: DateTime.now()),
-          Transaction(
-          id:"11",
-          title: "Conta de Luz 11",
-          value: 155.70,
-          date: DateTime.now()),
-          Transaction(
-          id:"12",
-          title: "Conta de Luz 12",
-          value: 155.70,
-          date: DateTime.now()),
-          Transaction(
-          id:"13",
-          title: "Conta de Luz 13",
-          value: 155.70,
-          date: DateTime.now())
-          ];
+  final _transactions = [];
 
 
-  _addTransaction(String title, double value){
-    final newTransaction = Transaction(id: Random().nextDouble().toString(), title: title, value: value, date: DateTime.now());
+  _addTransaction(String title, double value, DateTime data){
+    final newTransaction = Transaction(id: Random().nextDouble().toString(), title: title, value: value, date: data);
 
     setState(() {
       _transactions.add(newTransaction);
@@ -74,7 +33,7 @@ class _TransactionUserState extends State<TransactionUser> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TransactionList(_transactions),
+        //TransactionList(_transactions, _re),
         TransactionForm(_addTransaction),
       ],
     );

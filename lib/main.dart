@@ -54,9 +54,9 @@ class MyHomePage extends StatefulWidget{
 
 class _MyHomePageState extends State<MyHomePage> {
  
-  //final List<Transaction> _transactions = [];
+  final List<Transaction> _transactions = [];
 
-  final List<Transaction> _transactions = [
+  /*final List<Transaction> _transactions = [
     Transaction(
       id: 't0',
       title: 'Conta Antiga',
@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       value: 211.30,
       date: DateTime.now().subtract(const Duration(days: 4)),
     ),
-  ];
+  ];*/
 
 
   List<Transaction> get _recentTransactions{
@@ -85,8 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  _addTransaction(String title, double value){
-    final newTransaction = Transaction(id: Random().nextDouble().toString(), title: title, value: value, date: DateTime.now());
+  _addTransaction(String title, double value, DateTime date){
+    final newTransaction = Transaction(id: Random().nextDouble().toString(), title: title, value: value, date: date);
 
     setState(() {
       _transactions.add(newTransaction);
@@ -97,7 +97,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
+  _removeTransaction(String id){
+    
+    setState(() {
+      _transactions.removeWhere((element) {
+          return element.id == id;
+      });
+    });
 
+  }
 
   _openTransactionFormModal(BuildContext context){
     showModalBottomSheet(
@@ -121,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Chart(_recentTransactions),
             //TransactionUser()
-            TransactionList(_transactions),
+            TransactionList(_transactions, _removeTransaction),
 
           ],
         ),
