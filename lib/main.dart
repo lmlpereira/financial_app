@@ -1,12 +1,15 @@
 // ignore_for_file: use_key_in_widget_constructors, sort_child_properties_last
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:financial_app/components/chart.dart';
 import 'package:financial_app/components/transaction_form.dart';
 import 'package:financial_app/components/transaction_list.dart';
 import 'package:financial_app/models/transaction.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 void main(List<String> args) {
@@ -18,6 +21,8 @@ class ExpensesApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     final ThemeData tema = ThemeData();
+
+    //SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
 
     return MaterialApp(home: MyHomePage(),
      theme: tema.copyWith(
@@ -55,27 +60,7 @@ class MyHomePage extends StatefulWidget{
 class _MyHomePageState extends State<MyHomePage> {
  
   final List<Transaction> _transactions = [];
-
-  /*final List<Transaction> _transactions = [
-    Transaction(
-      id: 't0',
-      title: 'Conta Antiga',
-      value: 400.00,
-      date: DateTime.now().subtract(const Duration(days: 33)),
-    ),
-    Transaction(
-      id: 't1',
-      title: 'Novo Tênis de Corrida',
-      value: 310.76,
-      date: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Conta de Luz',
-      value: 211.30,
-      date: DateTime.now().subtract(const Duration(days: 4)),
-    ),
-  ];*/
+  bool _showChart = false;
 
 
   List<Transaction> get _recentTransactions{
@@ -110,32 +95,110 @@ class _MyHomePageState extends State<MyHomePage> {
   _openTransactionFormModal(BuildContext context){
     showModalBottomSheet(
       context: context, 
-      builder: (ctx){
+      builder: (_){
         return TransactionForm(_addTransaction);
       }
     );
   }
 
+  Widget _getIconButton(IconData icon, Function () fn){
+    return Platform.isIOS ? 
+      GestureDetector(
+        onTap: fn, child: Icon(icon),
+      ) :
+      IconButton(
+          onPressed: fn, 
+          icon: Icon(icon)
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
 
- 
-    
-    return Scaffold(
-      appBar: AppBar(title: const Text('Personal Expenses',), actions: [IconButton(onPressed: () => _openTransactionFormModal(context), icon: const Icon(Icons.add))],),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Chart(_recentTransactions),
-            //TransactionUser()
-            TransactionList(_transactions, _removeTransaction),
+    bool islandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.add), onPressed: () => _openTransactionFormModal(context),),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    final iconList = Platform.isIOS ? CupertinoIcons.list_bullet : Icons.list;
+    final chartList = Platform.isIOS ? CupertinoIcons.chart_bar : Icons.bar_chart;
+
+
+    final actions = [
+        if(islandscape)
+          _getIconButton(
+            _showChart ? iconList : chartList,
+            (){
+              setState(() {
+                _showChart = !_showChart;
+              });
+            } 
+          ),
+          _getIconButton(
+            Platform.isIOS ? CupertinoIcons.add : Icons.add,
+            () => _openTransactionFormModal(context),
+
+          ),
+        ];
+
+
+    final appbar =  AppBar(
+      title: Text('Personal Expenses', 
+        style: TextStyle(
+          fontSize: 20 * MediaQuery.of(context).textScaleFactor,),
+        ), 
+      actions: actions,
     );
+
+    final availableHeight = MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top * 2 ;
+
+    final pagebody = SafeArea(
+      child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+    
+              /*if(islandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Exibir Gráfico"),
+                  Switch.adaptive(value: _showChart, onChanged: (value){
+                    setState(() {
+                      _showChart = value;
+                    });
+                  }),
+                ],
+              ),*/
+              if(_showChart || !islandscape)
+                Container(      
+                  height: MediaQuery.of(context).size.height * (islandscape ? 0.65 : 0.25),
+                  child: Chart(_recentTransactions),
+                ),
+              
+              if(!_showChart || !islandscape)
+              Container(
+                height: availableHeight * (islandscape ? 1 : 0.75),
+                child: TransactionList(_transactions, _removeTransaction),
+              ),
+    
+            ],
+          ),
+        ),
+    );
+//print(availableHeight);
+    return Platform.isIOS ? CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+              middle: Text('Personal Expenses'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: actions,
+              ),
+            ),
+      child: pagebody,
+      
+      ): Scaffold(
+        appBar: appbar,
+        body: pagebody,
+        floatingActionButton: Platform.isIOS ? Container() : FloatingActionButton(child: const Icon(Icons.add), onPressed: () => _openTransactionFormModal(context),),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      );
   }
 }

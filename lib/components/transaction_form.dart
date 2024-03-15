@@ -1,6 +1,8 @@
 
 // ignore_for_file: use_key_in_widget_constructors, sort_child_properties_last
 
+import 'package:financial_app/components/adaptative_button.dart';
+import 'package:financial_app/components/adaptative_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -59,52 +61,61 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: titleController,
-                    onSubmitted: (_) => _submitform(),
-                    decoration:  const  InputDecoration(
-                      labelText: "Titulo",
-                    ),),
-                  TextField(
-                    controller: valueController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    onSubmitted: (_) => _submitform(),
-                    decoration: const InputDecoration(
-                      labelText: "Valor (€)",
-                    ),),
-                  Container(
-                    height: 70,
-                    child: Row(
+    return SingleChildScrollView(
+      child: Card(
+              elevation: 5,
+              child: Padding(
+                padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10 + MediaQuery.of(context).viewInsets.bottom),
+                child: Column(
+                  children: [
+                    /*TextField(
+                      controller: titleController,
+                      onSubmitted: (_) => _submitform(),
+                      decoration:  const  InputDecoration(
+                        labelText: "Titulo",
+                      ),),*/
+                    AdaptativeEditText(label: "Titulo", onSubmit: _submitform , controller: titleController, keyboardType: TextInputType.text ),
+                    
+                    
+                   /*TextField(
+                      controller: valueController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSubmitted: (_) => _submitform(),
+                      decoration: const InputDecoration(
+                        labelText: "Valor (€)",
+                      ),),*/
+
+                    AdaptativeEditText(label: "Valor (€)", onSubmit: _submitform , controller: valueController, keyboardType: TextInputType.numberWithOptions(decimal: true) ),
+  
+                    Container(
+                      height: 70,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: 
+                              Text(_selectedDate == null ? 'Nenhuma data selecionada!' : 'Data Selecionada: ${DateFormat("dd/MM/y").format(_selectedDate!)}')
+                          ),
+                          TextButton(               
+                            onPressed: _showDatePicker, 
+                            child: Text("Selecionar Data", style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.bold ),))
+                        ],
+                      ),
+                    ),
+                    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Expanded(
-                          child: 
-                            Text(_selectedDate == null ? 'Nenhuma data selecionada!' : 'Data Selecionada: ${DateFormat("dd/MM/y").format(_selectedDate!)}')
-                        ),
-                        TextButton(               
-                          onPressed: _showDatePicker, 
-                          child: Text("Selecionar Data", style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.bold ),))
+                        /*ElevatedButton(
+                        
+                          child: const Text('Nova Transação', style: TextStyle(color: Colors.white),),
+                          onPressed: _submitform),*/
+
+                        AdaptativeButton(label: 'Nova Transação', onPressed: _submitform)
                       ],
                     ),
-                  ),
-                  
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                      
-                        child: const Text('Nova Transação', style: TextStyle(color: Colors.white),),
-                        onPressed: _submitform)
-                      ,
-                    ],
-                  ),
-                ]),
+                  ]),
+              ),
             ),
-          );
+    );
   }
 }
