@@ -2,6 +2,7 @@
 // ignore_for_file: use_key_in_widget_constructors, sort_child_properties_last
 
 import 'package:financial_app/components/adaptative_button.dart';
+import 'package:financial_app/components/adaptative_data_picker.dart';
 import 'package:financial_app/components/adaptative_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -36,28 +37,10 @@ class _TransactionFormState extends State<TransactionForm> {
     
   }
 
-  _showDatePicker(){
-    
-    showDatePicker(
-      context: context, 
-      initialDate: DateTime.now(), 
-      firstDate: DateTime(2019), 
-      lastDate: DateTime.now()
-    ).then((value) { 
-      //selectedDate = value
-      if(value == null){
-        return;
-
-      }
-      setState(() {
-        _selectedDate = value;
-
-      });
-
-    });
+ 
 
 
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +57,7 @@ class _TransactionFormState extends State<TransactionForm> {
                       decoration:  const  InputDecoration(
                         labelText: "Titulo",
                       ),),*/
-                    AdaptativeEditText(label: "Titulo", onSubmit: _submitform , controller: titleController, keyboardType: TextInputType.text ),
+                    AdaptativeEditText(label: "Titulo", onSubmit: (_) => _submitform() , controller: titleController, keyboardType: TextInputType.text ),
                     
                     
                    /*TextField(
@@ -85,22 +68,13 @@ class _TransactionFormState extends State<TransactionForm> {
                         labelText: "Valor (€)",
                       ),),*/
 
-                    AdaptativeEditText(label: "Valor (€)", onSubmit: _submitform , controller: valueController, keyboardType: TextInputType.numberWithOptions(decimal: true) ),
+                    AdaptativeEditText(label: "Valor (€)", onSubmit: (_) => _submitform() , controller: valueController, keyboardType: TextInputType.numberWithOptions(decimal: true) ),
   
-                    Container(
-                      height: 70,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: 
-                              Text(_selectedDate == null ? 'Nenhuma data selecionada!' : 'Data Selecionada: ${DateFormat("dd/MM/y").format(_selectedDate!)}')
-                          ),
-                          TextButton(               
-                            onPressed: _showDatePicker, 
-                            child: Text("Selecionar Data", style: TextStyle(color:Theme.of(context).primaryColor, fontWeight: FontWeight.bold ),))
-                        ],
-                      ),
-                    ),
+                    AdaptativeDatePicker(selectedDate: _selectedDate!, onDateChange: (newDate){
+                      setState(() {
+                        _selectedDate = newDate;
+                      });
+                    }),
                     
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,

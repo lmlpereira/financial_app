@@ -5,7 +5,7 @@ import 'dart:io';
 class AdaptativeEditText extends StatelessWidget{
 
   final String label;
-  final Function () onSubmit;
+  final Function (String) onSubmit;
   final TextEditingController controller;
   final TextInputType keyboardType;
 
@@ -14,15 +14,20 @@ class AdaptativeEditText extends StatelessWidget{
   
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS ? CupertinoTextField(
-      placeholder: label,
-      controller: controller,
-      onSubmitted: (_) => onSubmit,
-      keyboardType: keyboardType,
+    return Platform.isIOS ? Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: CupertinoTextField(
+        placeholder: label,
+        controller: controller,
+        onSubmitted:  onSubmit,
+        keyboardType: keyboardType,
+        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+        
+      ),
     ) : TextField(
                       controller: controller,
                       keyboardType: keyboardType,
-                      onSubmitted: (_) => onSubmit,
+                      onSubmitted: onSubmit,
                       decoration: InputDecoration(
                         labelText: label,
                       ),);
